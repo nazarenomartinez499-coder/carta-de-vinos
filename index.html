@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carta de Vinos · Vinoteca Premium Online</title>
+<meta name="description" content="Vinoteca premium online con selección curada de vinos argentinos exclusivos. Malbec, Cabernet, espumantes y colecciones especiales para coleccionistas y amantes del vino.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --negro:#0D0D0D;
+  --gris-oscuro:#1C1C1C;
+  --bordo:#5B0F1A;
+  --bordo-claro:#7A1E2C;
+  --blanco:#F5F5F5;
+  --texto-muted:#888;
+  --borde:#2a2a2a;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Montserrat',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--negro);color:var(--blanco);font-family:var(--sans);font-weight:300;overflow-x:hidden}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#0a0a0a}
+::-webkit-scrollbar-thumb{background:var(--bordo)}
+
+/* PAGES */
+.page{display:none;animation:fadeIn .4s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(13,13,13,.97);border-bottom:0.5px solid var(--borde);padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:64px;backdrop-filter:blur(8px)}
+.nav-logo{font-family:var(--serif);font-size:20px;font-weight:300;letter-spacing:4px;cursor:pointer;color:var(--blanco)}
+.nav-logo span{color:var(--bordo-claro)}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--texto-muted);text-decoration:none;cursor:pointer;transition:color .25s;padding:4px 0;border-bottom:1px solid transparent}
+.nav-links a:hover,.nav-links a.active{color:var(--blanco);border-bottom-color:var(--bordo)}
+.nav-cart{display:flex;align-items:center;gap:18px}
+.cart-btn{background:none;border:0.5px solid var(--borde);color:var(--texto-muted);padding:8px 16px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);transition:all .25s}
+.cart-btn:hover{border-color:var(--bordo);color:var(--blanco)}
+
+/* HERO */
+.hero{min-height:calc(100vh - 64px);display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:0 48px;position:relative;overflow:hidden;border-bottom:0.5px solid var(--borde)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,#1a0408 0%,transparent 70%);pointer-events:none}
+.hero-content{position:relative;z-index:2}
+.eyebrow{font-size:9px;letter-spacing:4px;color:var(--bordo-claro);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:'';display:block;width:30px;height:0.5px;background:var(--bordo)}
+.hero h1{font-family:var(--serif);font-size:72px;line-height:1.08;font-weight:300;margin-bottom:24px;color:var(--blanco)}
+.hero h1 em{color:var(--bordo-claro);font-style:italic}
+.hero-sub{font-size:12px;color:var(--texto-muted);line-height:1.9;letter-spacing:.5px;margin-bottom:36px;max-width:360px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-primary{background:var(--bordo);color:var(--blanco);border:0.5px solid var(--bordo-claro);padding:14px 32px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);transition:all .25s}
+.btn-primary:hover{background:var(--bordo-claro)}
+.btn-ghost{background:transparent;color:var(--texto-muted);border:0.5px solid var(--borde);padding:14px 28px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);transition:all .25s}
+.btn-ghost:hover{color:var(--blanco);border-color:#555}
+.hero-visual{display:flex;justify-content:center;align-items:center;position:relative;z-index:2;height:70vh}
+.hero-bottles{display:flex;align-items:flex-end;gap:24px;justify-content:center}
+
+/* BOTTLE SVG STYLED */
+.bottle-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:transform .3s}
+.bottle-wrap:hover{transform:translateY(-8px)}
+.bottle-label{font-size:8px;letter-spacing:2px;color:var(--bordo-claro);text-transform:uppercase;opacity:0;transition:opacity .3s}
+.bottle-wrap:hover .bottle-label{opacity:1}
+
+/* STRIP */
+.strip{background:#080808;border-top:0.5px solid var(--borde);border-bottom:0.5px solid var(--borde);padding:16px 48px;display:flex;gap:0;overflow:hidden}
+.strip-item{flex:1;display:flex;align-items:center;gap:10px;padding:0 24px;border-right:0.5px solid var(--borde);font-size:9px;letter-spacing:1.5px;color:#555;text-transform:uppercase}
+.strip-item:first-child{padding-left:0}
+.strip-item:last-child{border-right:none}
+.strip-item strong{color:var(--texto-muted)}
+
+/* SECTIONS */
+.section{padding:80px 48px}
+.section-sm{padding:60px 48px}
+.section-dark{background:#080808;border-top:0.5px solid var(--borde);border-bottom:0.5px solid var(--borde)}
+.section-bordo{background:#0a0205}
+.section-label{font-size:9px;letter-spacing:3px;color:var(--bordo-claro);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.section-label::before{content:'';display:block;width:20px;height:0.5px;background:var(--bordo)}
+.section h2{font-family:var(--serif);font-size:38px;font-weight:300;color:var(--blanco);margin-bottom:40px;line-height:1.2}
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px}
+.section-header h2{margin-bottom:0}
+.see-all{font-size:9px;letter-spacing:2px;color:var(--bordo-claro);text-transform:uppercase;cursor:pointer;border-bottom:0.5px solid var(--bordo);padding-bottom:2px;transition:color .2s}
+.see-all:hover{color:var(--blanco)}
+
+/* PRODUCTS GRID */
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--borde)}
+.products-grid.cols-4{grid-template-columns:repeat(4,1fr)}
+.product-card{background:var(--negro);padding:28px 20px;cursor:pointer;transition:background .25s;position:relative;overflow:hidden}
+.product-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--bordo);transform:scaleX(0);transition:transform .3s}
+.product-card:hover{background:#110308}
+.product-card:hover::after{transform:scaleX(1)}
+.product-badge{position:absolute;top:16px;right:16px;background:var(--bordo);color:var(--blanco);font-size:7px;letter-spacing:1.5px;padding:4px 10px;text-transform:uppercase}
+.product-img{height:180px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.product-cat{font-size:8px;letter-spacing:2px;color:var(--bordo-claro);text-transform:uppercase;margin-bottom:6px}
+.product-name{font-family:var(--serif);font-size:18px;color:var(--blanco);margin-bottom:4px;font-weight:400}
+.product-region{font-size:9px;color:#555;letter-spacing:1px;margin-bottom:14px}
+.product-footer{display:flex;align-items:center;justify-content:space-between;border-top:0.5px solid var(--borde);padding-top:14px}
+.product-price{font-size:16px;color:var(--blanco);font-weight:400}
+.product-price small{font-size:9px;color:#555;margin-left:4px;font-weight:300}
+.add-btn{background:none;border:0.5px solid var(--borde);color:var(--texto-muted);width:30px;height:30px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .25s}
+.add-btn:hover{background:var(--bordo);border-color:var(--bordo);color:var(--blanco)}
+
+/* CATS GRID */
+.cats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--borde)}
+.cat-card{background:var(--negro);padding:28px 16px;text-align:center;cursor:pointer;transition:background .3s}
+.cat-card:hover{background:#110308}
+.cat-icon{font-size:24px;margin-bottom:12px;display:block}
+.cat-name{font-family:var(--serif);font-size:16px;color:var(--blanco);font-weight:300;margin-bottom:4px}
+.cat-count{font-size:8px;letter-spacing:1.5px;color:#444;text-transform:uppercase}
+
+/* BENEFITS */
+.benefits-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--borde)}
+.benefit{background:#080808;padding:36px 24px;text-align:center}
+.benefit-icon{font-size:26px;margin-bottom:16px;opacity:.6}
+.benefit-title{font-family:var(--serif);font-size:16px;color:var(--blanco);margin-bottom:8px;font-weight:400}
+.benefit-text{font-size:9px;color:#555;line-height:1.9;letter-spacing:.3px}
+
+/* TASTING */
+.tasting-split{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:400px}
+.tasting-left{padding:64px 48px;display:flex;flex-direction:column;justify-content:center}
+.tasting-right{background:#0a0205;display:flex;align-items:center;justify-content:center;border-left:0.5px solid var(--borde);padding:40px}
+.tasting-visual{text-align:center}
+.tasting-circle{width:200px;height:200px;border:0.5px solid var(--bordo);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px}
+.tasting-circle span{font-size:32px;opacity:.4;margin-bottom:8px}
+.tasting-circle p{font-family:var(--serif);font-size:22px;color:#555;font-weight:300;font-style:italic}
+
+/* TESTIMONIALS */
+.testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--borde)}
+.testimonial{background:#080808;padding:36px 28px}
+.test-quote{font-family:var(--serif);font-size:16px;color:var(--blanco);font-weight:300;line-height:1.7;margin-bottom:20px;font-style:italic}
+.test-author{font-size:9px;letter-spacing:2px;color:var(--bordo-claro);text-transform:uppercase}
+.test-role{font-size:8px;color:#444;letter-spacing:1px;margin-top:2px}
+.stars{color:var(--bordo-claro);font-size:11px;margin-bottom:14px;letter-spacing:2px}
+
+/* NEWSLETTER */
+.newsletter{text-align:center;padding:80px 48px}
+.newsletter h2{font-family:var(--serif);font-size:36px;font-weight:300;margin-bottom:10px}
+.newsletter p{font-size:11px;color:var(--texto-muted);margin-bottom:32px;letter-spacing:.3px}
+.nl-form{display:flex;max-width:420px;margin:0 auto}
+.nl-input{flex:1;background:#111;border:0.5px solid var(--borde);color:var(--blanco);padding:14px 18px;font-size:11px;outline:none;font-family:var(--sans)}
+.nl-input::placeholder{color:#444}
+.nl-input:focus{border-color:var(--bordo)}
+.nl-btn{background:var(--bordo);color:var(--blanco);border:none;padding:14px 24px;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);transition:background .25s}
+.nl-btn:hover{background:var(--bordo-claro)}
+
+/* FOOTER */
+footer{background:#060606;border-top:0.5px solid var(--borde);padding:48px 48px 28px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-brand .logo{font-family:var(--serif);font-size:20px;letter-spacing:4px;font-weight:300;margin-bottom:14px}
+.footer-brand p{font-size:10px;color:#444;line-height:1.8;max-width:220px}
+.footer-col h4{font-size:9px;letter-spacing:2.5px;color:var(--bordo-claro);text-transform:uppercase;margin-bottom:16px}
+.footer-col ul{list-style:none}
+.footer-col ul li{margin-bottom:10px}
+.footer-col ul li a{font-size:10px;color:#444;text-decoration:none;cursor:pointer;transition:color .2s;letter-spacing:.5px}
+.footer-col ul li a:hover{color:var(--blanco)}
+.footer-bottom{border-top:0.5px solid var(--borde);padding-top:24px;display:flex;justify-content:space-between;align-items:center}
+.footer-bottom p{font-size:9px;color:#333;letter-spacing:1px}
+.social-links{display:flex;gap:16px}
+.social-link{font-size:9px;letter-spacing:1.5px;color:#333;text-decoration:none;text-transform:uppercase;transition:color .2s}
+.social-link:hover{color:var(--blanco)}
+
+/* WA FLOAT */
+.wa-float{position:fixed;bottom:28px;right:28px;z-index:200;background:#25D366;color:#fff;border:none;padding:14px 20px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(37,211,102,.3);transition:all .25s}
+.wa-float:hover{background:#20BD5A;transform:translateY(-2px)}
+
+/* BLOG */
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--borde)}
+.blog-card{background:var(--negro);cursor:pointer;transition:background .25s}
+.blog-card:hover{background:#0d0205}
+.blog-img{height:200px;background:#111;display:flex;align-items:center;justify-content:center;border-bottom:0.5px solid var(--borde);font-size:40px;opacity:.3}
+.blog-body{padding:24px 20px}
+.blog-cat{font-size:8px;letter-spacing:2px;color:var(--bordo-claro);text-transform:uppercase;margin-bottom:8px}
+.blog-title{font-family:var(--serif);font-size:20px;color:var(--blanco);font-weight:300;line-height:1.4;margin-bottom:10px}
+.blog-excerpt{font-size:10px;color:#555;line-height:1.8;margin-bottom:16px}
+.blog-meta{font-size:8px;color:#333;letter-spacing:1px;text-transform:uppercase}
+
+/* COLECCIONES */
+.colecciones-hero{padding:80px 48px 60px;border-bottom:0.5px solid var(--borde)}
+.colecciones-hero h1{font-family:var(--serif);font-size:56px;font-weight:300;margin-bottom:16px}
+.colecciones-hero p{font-size:12px;color:var(--texto-muted);max-width:500px;line-height:1.9}
+.colecciones-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--borde)}
+.coleccion-card{background:var(--negro);padding:48px 40px;cursor:pointer;transition:background .25s;position:relative;overflow:hidden;border-bottom:0.5px solid var(--borde)}
+.coleccion-card:hover{background:#0d0205}
+.col-tag{font-size:8px;letter-spacing:2px;color:var(--bordo-claro);text-transform:uppercase;margin-bottom:14px}
+.col-name{font-family:var(--serif);font-size:28px;font-weight:300;color:var(--blanco);margin-bottom:10px}
+.col-desc{font-size:10px;color:#555;line-height:1.8;margin-bottom:20px;max-width:340px}
+.col-price{font-size:13px;color:var(--blanco)}
+.col-icon{position:absolute;right:40px;top:50%;transform:translateY(-50%);font-size:64px;opacity:.06}
+
+/* NOSOTROS */
+.nosotros-hero{display:grid;grid-template-columns:1fr 1fr;min-height:500px}
+.nosotros-left{padding:80px 48px;display:flex;flex-direction:column;justify-content:center}
+.nosotros-left h1{font-family:var(--serif);font-size:52px;font-weight:300;line-height:1.15;margin-bottom:24px}
+.nosotros-left h1 em{color:var(--bordo-claro);font-style:italic}
+.nosotros-left p{font-size:12px;color:var(--texto-muted);line-height:1.9;margin-bottom:16px}
+.nosotros-right{background:#0a0205;border-left:0.5px solid var(--borde);display:flex;align-items:center;justify-content:center;padding:48px}
+.values-list{display:grid;gap:24px}
+.value-item{display:flex;gap:16px;align-items:flex-start}
+.value-num{font-family:var(--serif);font-size:36px;color:var(--bordo);font-weight:300;line-height:1;min-width:40px}
+.value-text h4{font-family:var(--serif);font-size:16px;font-weight:400;color:var(--blanco);margin-bottom:4px}
+.value-text p{font-size:9px;color:#555;line-height:1.7}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--borde)}
+.stat{background:#080808;padding:36px 24px;text-align:center}
+.stat-num{font-family:var(--serif);font-size:42px;font-weight:300;color:var(--blanco);margin-bottom:6px}
+.stat-label{font-size:8px;letter-spacing:2px;color:#444;text-transform:uppercase}
+
+/* CONTACTO */
+.contacto-split{display:grid;grid-template-columns:1fr 1fr;min-height:600px}
+.contacto-left{padding:80px 48px;border-right:0.5px solid var(--borde)}
+.contacto-left h1{font-family:var(--serif);font-size:48px;font-weight:300;margin-bottom:14px}
+.contacto-left p{font-size:11px;color:var(--texto-muted);line-height:1.9;margin-bottom:40px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:9px;letter-spacing:1.5px;color:var(--bordo-claro);text-transform:uppercase;margin-bottom:8px}
+.form-group input,.form-group textarea,.form-group select{width:100%;background:#0a0a0a;border:0.5px solid var(--borde);color:var(--blanco);padding:12px 16px;font-size:11px;font-family:var(--sans);outline:none;transition:border-color .25s;-webkit-appearance:none}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--bordo)}
+.form-group textarea{height:120px;resize:none}
+.form-group select option{background:#111}
+.contacto-right{padding:80px 48px;background:#080808;display:flex;flex-direction:column;justify-content:space-between}
+.contact-info h3{font-family:var(--serif);font-size:24px;font-weight:300;margin-bottom:28px}
+.contact-item{display:flex;gap:14px;align-items:flex-start;margin-bottom:24px;padding-bottom:24px;border-bottom:0.5px solid var(--borde)}
+.contact-item:last-of-type{border-bottom:none}
+.contact-icon{font-size:16px;opacity:.5;margin-top:2px}
+.contact-label{font-size:8px;letter-spacing:2px;color:var(--bordo-claro);text-transform:uppercase;margin-bottom:4px}
+.contact-val{font-size:11px;color:var(--blanco)}
+.wa-contact{background:#25D366;color:#fff;border:none;padding:16px 28px;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:10px;width:100%;justify-content:center;transition:background .25s;margin-top:32px}
+.wa-contact:hover{background:#20BD5A}
+
+/* TIENDA PAGE */
+.tienda-header{padding:60px 48px 40px;border-bottom:0.5px solid var(--borde);display:flex;align-items:flex-end;justify-content:space-between}
+.tienda-header h1{font-family:var(--serif);font-size:48px;font-weight:300}
+.tienda-filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{background:none;border:0.5px solid var(--borde);color:var(--texto-muted);padding:8px 18px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);transition:all .25s}
+.filter-btn:hover,.filter-btn.active{background:var(--bordo);border-color:var(--bordo);color:var(--blanco)}
+.tienda-body{display:grid;grid-template-columns:220px 1fr;gap:0;border-top:0.5px solid var(--borde)}
+.sidebar{border-right:0.5px solid var(--borde);padding:32px 28px}
+.sidebar h4{font-size:9px;letter-spacing:2px;color:var(--bordo-claro);text-transform:uppercase;margin-bottom:16px;margin-top:24px}
+.sidebar h4:first-child{margin-top:0}
+.sidebar ul{list-style:none}
+.sidebar ul li{margin-bottom:10px}
+.sidebar ul li a{font-size:10px;color:#555;cursor:pointer;transition:color .2s;display:flex;justify-content:space-between}
+.sidebar ul li a:hover{color:var(--blanco)}
+.sidebar ul li a span{color:var(--bordo)}
+.price-range{display:flex;gap:8px}
+.price-range input{width:80px;background:#111;border:0.5px solid var(--borde);color:var(--blanco);padding:8px 10px;font-size:10px;font-family:var(--sans);outline:none}
+.productos-area{padding:28px}
+.sort-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:0.5px solid var(--borde)}
+.sort-bar p{font-size:10px;color:#444}
+.sort-select{background:#111;border:0.5px solid var(--borde);color:var(--texto-muted);padding:8px 14px;font-size:10px;font-family:var(--sans);outline:none;cursor:pointer}
+
+/* DIVIDER */
+.divider{height:0.5px;background:var(--borde);margin:0 48px}
+
+/* RESPONSIVE BASIC */
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .nav-links{display:none}
+  .hero{grid-template-columns:1fr;padding:40px 20px;min-height:auto}
+  .hero-visual{display:none}
+  .hero h1{font-size:44px}
+  .section,.section-sm{padding:48px 20px}
+  .products-grid{grid-template-columns:1fr 1fr}
+  .cats-grid{grid-template-columns:repeat(3,1fr)}
+  .benefits-grid{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .tasting-split,.nosotros-hero,.contacto-split{grid-template-columns:1fr}
+  .tienda-body{grid-template-columns:1fr}
+  .sidebar{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVEGACIÓN -->
+<nav>
+  <div class="nav-logo" onclick="showPage('inicio')">CARTA <span>·</span> DE VINOS</div>
+  <ul class="nav-links">
+    <li><a onclick="showPage('inicio')" id="nav-inicio" class="active">Inicio</a></li>
+    <li><a onclick="showPage('tienda')" id="nav-tienda">Tienda</a></li>
+    <li><a onclick="showPage('colecciones')" id="nav-colecciones">Colecciones</a></li>
+    <li><a onclick="showPage('blog')" id="nav-blog">Blog</a></li>
+    <li><a onclick="showPage('nosotros')" id="nav-nosotros">Nosotros</a></li>
+    <li><a onclick="showPage('contacto')" id="nav-contacto">Contacto</a></li>
+  </ul>
+  <div class="nav-cart">
+    <button class="cart-btn">🛒 Carrito (0)</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ INICIO ═══════════════════════ -->
+<div id="page-inicio" class="page active">
+
+  <section class="hero">
+    <div class="hero-content">
+      <p class="eyebrow">Vinoteca Premium · Argentina</p>
+      <h1>El arte de<br>elegir el vino<br><em>perfecto</em></h1>
+      <p class="hero-sub">Selección curada de los mejores vinos argentinos. Para quienes aprecian la diferencia entre una buena botella y una experiencia inolvidable.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('tienda')">Explorar colección</button>
+        <button class="btn-ghost" onclick="showPage('colecciones')">Degustaciones</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-bottles">
+        <div class="bottle-wrap">
+          <svg width="60" height="180" viewBox="0 0 60 180"><rect x="24" y="0" width="12" height="14" rx="2" fill="#2a0810"/><rect x="22" y="12" width="16" height="8" rx="0" fill="#3a1020"/><path d="M18 20 Q12 36 11 55 L11 158 Q11 170 30 170 Q49 170 49 158 L49 55 Q48 36 42 20 Z" fill="#1e0408"/><path d="M18 20 Q12 36 11 55 L11 80 Q20 70 30 70 Q40 70 49 80 L49 55 Q48 36 42 20 Z" fill="#2a0810"/><rect x="16" y="95" width="28" height="38" rx="2" fill="#fff" opacity=".05"/><text x="30" y="108" text-anchor="middle" font-size="4" fill="#F5C0C0" font-family="serif" letter-spacing="1">RUTINI</text><text x="30" y="116" text-anchor="middle" font-size="3" fill="#888" font-family="sans-serif">MALBEC · 2021</text><text x="30" y="124" text-anchor="middle" font-size="3" fill="#555" font-family="sans-serif">MENDOZA</text></svg>
+          <span class="bottle-label">Rutini</span>
+        </div>
+        <div class="bottle-wrap" style="transform:translateY(-20px)">
+          <svg width="74" height="220" viewBox="0 0 74 220"><rect x="29" y="0" width="16" height="18" rx="2" fill="#3a0a14"/><rect x="27" y="16" width="20" height="10" rx="0" fill="#4a1020"/><path d="M20 26 Q13 46 12 68 L12 194 Q12 208 37 208 Q62 208 62 194 L62 68 Q61 46 54 26 Z" fill="#2a0810"/><path d="M20 26 Q13 46 12 68 L12 96 Q24 84 37 84 Q50 84 62 96 L62 68 Q61 46 54 26 Z" fill="#380e18"/><rect x="18" y="115" width="38" height="52" rx="2" fill="#fff" opacity=".06"/><text x="37" y="130" text-anchor="middle" font-size="5" fill="#F5C0C0" font-family="serif" letter-spacing="1">CATENA</text><text x="37" y="140" text-anchor="middle" font-size="4" fill="#F5C0C0" font-family="serif">ZAPATA</text><text x="37" y="152" text-anchor="middle" font-size="3.5" fill="#777" font-family="sans-serif">MALBEC · 2020</text><text x="37" y="160" text-anchor="middle" font-size="3" fill="#444" font-family="sans-serif">LUJÁN DE CUYO</text></svg>
+          <span class="bottle-label">Catena Zapata</span>
+        </div>
+        <div class="bottle-wrap">
+          <svg width="58" height="175" viewBox="0 0 58 175"><rect x="23" y="0" width="12" height="13" rx="2" fill="#1a0820"/><rect x="21" y="11" width="16" height="8" rx="0" fill="#2a0e30"/><path d="M17 19 Q11 34 10 52 L10 154 Q10 166 29 166 Q48 166 48 154 L48 52 Q47 34 41 19 Z" fill="#1a0828"/><path d="M17 19 Q11 34 10 52 L10 76 Q19 66 29 66 Q39 66 48 76 L48 52 Q47 34 41 19 Z" fill="#260c38"/><rect x="15" y="90" width="28" height="36" rx="1" fill="#fff" opacity=".05"/><text x="29" y="103" text-anchor="middle" font-size="4" fill="#F5C0C0" font-family="serif">LUIGI</text><text x="29" y="111" text-anchor="middle" font-size="4" fill="#F5C0C0" font-family="serif">BOSCA</text><text x="29" y="120" text-anchor="middle" font-size="3" fill="#666" font-family="sans-serif">MALBEC · 2022</text></svg>
+          <span class="bottle-label">Luigi Bosca</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="strip">
+    <div class="strip-item"><span>🍷</span><div><strong>Envío gratuito</strong> en compras +$50.000</div></div>
+    <div class="strip-item"><span>🏆</span><div><strong>Selección sommelier</strong> certificada</div></div>
+    <div class="strip-item"><span>📦</span><div><strong>Packaging premium</strong> incluido</div></div>
+    <div class="strip-item"><span>🔒</span><div><strong>Pago 100%</strong> seguro</div></div>
+  </div>
+
+  <!-- PRODUCTOS DESTACADOS -->
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <p class="section-label">Selección de la semana</p>
+        <h2>Vinos destacados</h2>
+      </div>
+      <span class="see-all" onclick="showPage('tienda')">Ver todos →</span>
+    </div>
+    <div class="products-grid">
+      <div class="product-card" onclick="showPage('tienda')">
+        <div class="product-img">
+          <svg width="50" height="140" viewBox="0 0 50 140"><rect x="19" y="0" width="12" height="12" rx="1" fill="#2a0810"/><path d="M14 12 Q8 26 7 40 L7 124 Q7 134 25 134 Q43 134 43 124 L43 40 Q42 26 36 12 Z" fill="#1e0408"/><rect x="11" y="72" width="28" height="38" rx="1" fill="#fff" opacity=".05"/><text x="25" y="84" text-anchor="middle" font-size="4" fill="#F5C0C0" font-family="serif">RUTINI</text><text x="25" y="93" text-anchor="middle" font-size="3" fill="#888">MALBEC</text><text x="25" y="101" text-anchor="middle" font-size="2.5" fill="#555">2021 · MENDOZA</text></svg>
+        </div>
+        <p class="product-cat">Tinto · Mendoza</p>
+        <h3 class="product-name">Rutini Malbec 2021</h3>
+        <p class="product-region">Tupungato, Mendoza · 14.5% Alc.</p>
+        <div class="product-footer">
+          <div class="product-price">$18.500 <small>750ml</small></div>
+          <button class="add-btn" title="Agregar al carrito">+</button>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('tienda')">
+        <div class="product-badge">Destacado</div>
+        <div class="product-img">
+          <svg width="58" height="160" viewBox="0 0 58 160"><rect x="22" y="0" width="14" height="14" rx="2" fill="#3a0a14"/><path d="M16 14 Q9 30 8 48 L8 142 Q8 154 29 154 Q50 154 50 142 L50 48 Q49 30 42 14 Z" fill="#2a0810"/><rect x="13" y="84" width="32" height="42" rx="1" fill="#fff" opacity=".06"/><text x="29" y="98" text-anchor="middle" font-size="4.5" fill="#F5C0C0" font-family="serif">CATENA</text><text x="29" y="108" text-anchor="middle" font-size="4" fill="#F5C0C0" font-family="serif">ZAPATA</text><text x="29" y="118" text-anchor="middle" font-size="3" fill="#777">MALBEC · 2020</text></svg>
+        </div>
+        <p class="product-cat">Premium · Luján de Cuyo</p>
+        <h3 class="product-name">Catena Zapata Malbec</h3>
+        <p class="product-region">Luján de Cuyo, Mendoza · 14% Alc.</p>
+        <div class="product-footer">
+          <div class="product-price">$42.000 <small>750ml</small></div>
+          <button class="add-btn" title="Agregar al carrito">+</button>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('tienda')">
+        <div class="product-img">
+          <svg width="50" height="140" viewBox="0 0 50 140"><rect x="19" y="0" width="12" height="12" rx="1" fill="#1a0820"/><path d="M14 12 Q8 26 7 40 L7 124 Q7 134 25 134 Q43 134 43 124 L43 40 Q42 26 36 12 Z" fill="#1a0828"/><rect x="11" y="72" width="28" height="36" rx="1" fill="#fff" opacity=".05"/><text x="25" y="84" text-anchor="middle" font-size="4" fill="#F5C0C0" font-family="serif">LUIGI</text><text x="25" y="93" text-anchor="middle" font-size="3.5" fill="#F5C0C0" font-family="serif">BOSCA</text><text x="25" y="101" text-anchor="middle" font-size="2.5" fill="#666">MALBEC · 2022</text></svg>
+        </div>
+        <p class="product-cat">Tinto · Maipú</p>
+        <h3 class="product-name">Luigi Bosca Malbec</h3>
+        <p class="product-region">Maipú, Mendoza · 14.5% Alc.</p>
+        <div class="product-footer">
+          <div class="product-price">$22.000 <small>750ml</small></div>
+          <button class="add-btn" title="Agregar al carrito">+</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CATEGORÍAS -->
+  <section class="section">
+    <p class="section-label">Explorar por estilo</p>
+    <h2>Nuestras categorías</h2>
+    <div class="cats-grid">
+      <div class="cat-card" onclick="showPage('tienda')"><span class="cat-icon">🍷</span><p class="cat-name">Tintos</p><p class="cat-count">24 vinos</p></div>
+      <div class="cat-card" onclick="showPage('tienda')"><span class="cat-icon">🥂</span><p class="cat-name">Blancos</p><p class="cat-count">15 vinos</p></div>
+      <div class="cat-card" onclick="showPage('tienda')"><span class="cat-icon">🍾</span><p class="cat-name">Espumantes</p><p class="cat-count">12 vinos</p></div>
+      <div class="cat-card" onclick="showPage('tienda')"><span class="cat-icon">⭐</span><p class="cat-name">Premium</p><p class="cat-count">18 vinos</p></div>
+      <div class="cat-card" onclick="showPage('tienda')"><span class="cat-icon">🏆</span><p class="cat-name">Reserva</p><p class="cat-count">9 vinos</p></div>
+      <div class="cat-card" onclick="showPage('tienda')"><span class="cat-icon">📅</span><p class="cat-name">Cosechas</p><p class="cat-count">6 vinos</p></div>
+    </div>
+  </section>
+
+  <!-- BENEFICIOS -->
+  <div class="section-dark">
+    <div class="benefits-grid">
+      <div class="benefit"><div class="benefit-icon">🍇</div><p class="benefit-title">Selección sommelier</p><p class="benefit-text">Cada botella elegida por nuestro equipo de expertos certificados para garantizar la más alta calidad</p></div>
+      <div class="benefit"><div class="benefit-icon">📦</div><p class="benefit-title">Packaging de lujo</p><p class="benefit-text">Presentación premium para regalos corporativos, ocasiones especiales y coleccionistas exigentes</p></div>
+      <div class="benefit"><div class="benefit-icon">🚚</div><p class="benefit-title">Entrega express</p><p class="benefit-text">Logística refrigerada en Buenos Aires y envíos a todo el país con seguimiento en tiempo real</p></div>
+      <div class="benefit"><div class="benefit-icon">🎯</div><p class="benefit-title">Asesoría personalizada</p><p class="benefit-text">Consultá con nuestros sommeliers para encontrar el vino perfecto para cada ocasión o maridaje</p></div>
+    </div>
+  </div>
+
+  <!-- DEGUSTACIONES -->
+  <div class="tasting-split">
+    <div class="tasting-left">
+      <p class="section-label">Experiencias exclusivas</p>
+      <h2 style="font-family:var(--serif);font-size:38px;font-weight:300;margin-bottom:16px">Degustaciones<br><em style="color:var(--bordo-claro);font-style:italic">privadas</em></h2>
+      <p style="font-size:11px;color:var(--texto-muted);line-height:1.9;margin-bottom:28px">Organizamos experiencias íntimas para conocedores, eventos corporativos y ocasiones especiales. Maridajes curados, sommelier en vivo y acceso a colecciones únicas no disponibles en tienda.</p>
+      <button class="btn-primary" onclick="showPage('colecciones')">Reservar experiencia</button>
+    </div>
+    <div class="tasting-right">
+      <div class="tasting-visual">
+        <div class="tasting-circle">
+          <span>🍷</span>
+          <p>boutique</p>
+        </div>
+        <p style="font-size:9px;letter-spacing:2px;color:#333;text-transform:uppercase">Experiencias desde $15.000 p/p</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIOS -->
+  <section class="section-bordo" style="padding:80px 48px">
+    <p class="section-label" style="justify-content:center;margin-bottom:10px">Lo que dicen nuestros clientes</p>
+    <h2 style="text-align:center;font-family:var(--serif);font-size:36px;font-weight:300;margin-bottom:48px">Experiencias que hablan</h2>
+    <div class="testimonials">
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="test-quote">"Una cava online que realmente entiende el valor de cada botella. La selección es impecable y el packaging llegó perfecto."</p>
+        <p class="test-author">Martín V.</p>
+        <p class="test-role">Coleccionista · Buenos Aires</p>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="test-quote">"Pedí una caja para regalo corporativo y superó todas mis expectativas. El sommelier me asesoró perfectamente."</p>
+        <p class="test-author">Lucía M.</p>
+        <p class="test-role">Gerente Comercial · Palermo</p>
+      </div>
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="test-quote">"La degustación privada fue una experiencia única. Aprendí más sobre vinos en esas dos horas que en años de consumo."</p>
+        <p class="test-author">Federico R.</p>
+        <p class="test-role">Sommelier aficionado · Córdoba</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <div class="section-dark newsletter">
+    <p class="section-label" style="justify-content:center;margin-bottom:10px">Mundo Carta de Vinos</p>
+    <h2>Maridajes, novedades<br>y colecciones exclusivas</h2>
+    <p>Recibí selecciones curadas, recomendaciones de temporada y acceso anticipado a ediciones limitadas.</p>
+    <div class="nl-form">
+      <input class="nl-input" type="email" placeholder="tu@email.com">
+      <button class="nl-btn">Suscribirme</button>
+    </div>
+  </div>
+
+</div><!-- fin inicio -->
+
+<!-- ═══════════════════════ TIENDA ═══════════════════════ -->
+<div id="page-tienda" class="page">
+  <div class="tienda-header">
+    <div>
+      <p class="section-label" style="margin-bottom:8px">Catálogo completo</p>
+      <h1 style="font-family:var(--serif);font-size:48px;font-weight:300">Nuestra tienda</h1>
+    </div>
+    <div class="tienda-filters">
+      <button class="filter-btn active">Todos</button>
+      <button class="filter-btn">Tintos</button>
+      <button class="filter-btn">Blancos</button>
+      <button class="filter-btn">Espumantes</button>
+      <button class="filter-btn">Premium</button>
+      <button class="filter-btn">Reserva</button>
+    </div>
+  </div>
+  <div class="tienda-body">
+    <aside class="sidebar">
+      <h4>Categorías</h4>
+      <ul>
+        <li><a>Tintos <span>24</span></a></li>
+        <li><a>Blancos <span>15</span></a></li>
+        <li><a>Espumantes <span>12</span></a></li>
+        <li><a>Premium <span>18</span></a></li>
+        <li><a>Reserva <span>9</span></a></li>
+        <li><a>Cosechas <span>6</span></a></li>
+      </ul>
+      <h4>Precio</h4>
+      <div class="price-range">
+        <input type="number" placeholder="Min" value="5000">
+        <input type="number" placeholder="Max" value="80000">
+      </div>
+      <h4>Región</h4>
+      <ul>
+        <li><a>Mendoza <span>38</span></a></li>
+        <li><a>San Juan <span>12</span></a></li>
+        <li><a>Salta <span>8</span></a></li>
+        <li><a>Patagonia <span>6</span></a></li>
+      </ul>
+      <h4>Varietal</h4>
+      <ul>
+        <li><a>Malbec <span>22</span></a></li>
+        <li><a>Cabernet Sauvignon <span>14</span></a></li>
+        <li><a>Cabernet Franc <span>8</span></a></li>
+        <li><a>Chardonnay <span>10</span></a></li>
+        <li><a>Torrontés <span>6</span></a></li>
+      </ul>
+    </aside>
+    <div class="productos-area">
+      <div class="sort-bar">
+        <p>Mostrando <strong style="color:var(--blanco)">6 productos</strong></p>
+        <select class="sort-select">
+          <option>Ordenar por: Destacados</option>
+          <option>Precio: menor a mayor</option>
+          <option>Precio: mayor a menor</option>
+          <option>Más nuevos</option>
+        </select>
+      </div>
+      <div class="products-grid cols-4" style="background:var(--borde)">
+
+        <div class="product-card">
+          <div class="product-badge">Destacado</div>
+          <div class="product-img">
+            <svg width="46" height="130" viewBox="0 0 46 130"><rect x="17" y="0" width="12" height="11" rx="1" fill="#2a0810"/><path d="M13 11 Q7 24 6 38 L6 115 Q6 124 23 124 Q40 124 40 115 L40 38 Q39 24 33 11 Z" fill="#1e0408"/><rect x="10" y="66" width="26" height="34" rx="1" fill="#fff" opacity=".05"/><text x="23" y="78" text-anchor="middle" font-size="4" fill="#F5C0C0" font-family="serif">RUTINI</text><text x="23" y="87" text-anchor="middle" font-size="3" fill="#888">MALBEC · 2021</text><text x="23" y="94" text-anchor="middle" font-size="2.5" fill="#555">MENDOZA</text></svg>
+          </div>
+          <p class="product-cat">Tinto · Mendoza</p>
+          <h3 class="product-name">Rutini Malbec 2021</h3>
+          <p class="product-region">Tupungato · 14.5%</p>
+          <div class="product-footer">
+            <div class="product-price">$18.500</div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-img">
+            <svg width="52" height="148" viewBox="0 0 52 148"><rect x="19" y="0" width="14" height="13" rx="2" fill="#3a0a14"/><path d="M14 13 Q8 28 7 44 L7 132 Q7 143 26 143 Q45 143 45 132 L45 44 Q44 28 38 13 Z" fill="#2a0810"/><rect x="12" y="78" width="28" height="38" rx="1" fill="#fff" opacity=".06"/><text x="26" y="91" text-anchor="middle" font-size="4.5" fill="#F5C0C0" font-family="serif">CATENA</text><text x="26" y="101" text-anchor="middle" font-size="3.5" fill="#F5C0C0" font-family="serif">ZAPATA</text><text x="26" y="110" text-anchor="middle" font-size="2.8" fill="#777">MALBEC 2020</text></svg>
+          </div>
+          <p class="product-cat">Premium · Luján de Cuyo</p>
+          <h3 class="product-name">Catena Zapata Malbec</h3>
+          <p class="product-region">Luján de Cuyo · 14%</p>
+          <div class="product-footer">
+            <div class="product-price">$42.000</div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-img">
+            <svg width="46" height="130" viewBox="0 0 46 130"><rect x="17" y="0" width="12" height="11" rx="1" fill="#1a0820"/><path d="M13 11 Q7 24 6 38 L6 115 Q6 124 23 124 Q40 124 40 115 L40 38 Q39 24 33 11 Z" fill="#1a0828"/><rect x="10" y="66" width="26" height="34" rx="1" fill="#fff" opacity=".05"/><text x="23" y="78" text-anchor="middle" font-size="4" fill="#F5C0C0" font-family="serif">LUIGI</text><text x="23" y="87" text-anchor="middle" font-size="3.5" fill="#F5C0C0" font-family="serif">BOSCA</text><text x="23" y="96" text-anchor="middle" font-size="2.5" fill="#666">MALBEC · 2022</text></svg>
+          </div>
+          <p class="product-cat">Tinto · Maipú</p>
+          <h3 class="product-name">Luigi Bosca Malbec</h3>
+          <p class="product-region">Maipú, Mendoza · 14.5%</p>
+          <div class="product-footer">
+            <div class="product-price">$22.000</div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-img">
+            <svg width="46" height="130" viewBox="0 0 46 130"><rect x="17" y="0" width="12" height="11" rx="1" fill="#0a1a10"/><path d="M13 11 Q7 24 6 38 L6 115 Q6 124 23 124 Q40 124 40 115 L40 38 Q39 24 33 11 Z" fill="#081410"/><rect x="10" y="66" width="26" height="34" rx="1" fill="#fff" opacity=".05"/><text x="23" y="78" text-anchor="middle" font-size="3.5" fill="#a0d0a0" font-family="serif">SALENTEIN</text><text x="23" y="88" text-anchor="middle" font-size="3" fill="#888">RESERVE</text><text x="23" y="96" text-anchor="middle" font-size="2.5" fill="#555">MALBEC · 2021</text></svg>
+          </div>
+          <p class="product-cat">Reserva · Valle de Uco</p>
+          <h3 class="product-name">Salentein Reserve Malbec</h3>
+          <p class="product-region">Valle de Uco · 14%</p>
+          <div class="product-footer">
+            <div class="product-price">$28.000</div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-img">
+            <svg width="46" height="130" viewBox="0 0 46 130"><rect x="17" y="0" width="12" height="11" rx="1" fill="#0a0a20"/><path d="M13 11 Q7 24 6 38 L6 115 Q6 124 23 124 Q40 124 40 115 L40 38 Q39 24 33 11 Z" fill="#0a0820"/><rect x="10" y="66" width="26" height="34" rx="1" fill="#fff" opacity=".05"/><text x="23" y="78" text-anchor="middle" font-size="3.5" fill="#C0C0F5" font-family="serif">TRUMPETER</text><text x="23" y="88" text-anchor="middle" font-size="3" fill="#888">CAB. SAUV.</text><text x="23" y="96" text-anchor="middle" font-size="2.5" fill="#555">MENDOZA · 2022</text></svg>
+          </div>
+          <p class="product-cat">Tinto · Mendoza</p>
+          <h3 class="product-name">Trumpeter Cabernet Sauvignon</h3>
+          <p class="product-region">Mendoza · 13.5%</p>
+          <div class="product-footer">
+            <div class="product-price">$16.500</div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-badge">Exclusivo</div>
+          <div class="product-img">
+            <svg width="46" height="130" viewBox="0 0 46 130"><rect x="17" y="0" width="12" height="11" rx="1" fill="#1a0a30"/><path d="M13 11 Q7 24 6 38 L6 115 Q6 124 23 124 Q40 124 40 115 L40 38 Q39 24 33 11 Z" fill="#150830"/><rect x="10" y="66" width="26" height="34" rx="1" fill="#fff" opacity=".05"/><text x="23" y="76" text-anchor="middle" font-size="3" fill="#D0C0F5" font-family="serif">ANGELICA</text><text x="23" y="84" text-anchor="middle" font-size="3" fill="#D0C0F5" font-family="serif">ZAPATA</text><text x="23" y="93" text-anchor="middle" font-size="2.8" fill="#888">CAB. FRANC</text><text x="23" y="100" text-anchor="middle" font-size="2.5" fill="#555">MENDOZA · 2019</text></svg>
+          </div>
+          <p class="product-cat">Premium · Mendoza</p>
+          <h3 class="product-name">Angélica Zapata Cab. Franc</h3>
+          <p class="product-region">Agrelo, Mendoza · 14%</p>
+          <div class="product-footer">
+            <div class="product-price">$56.000</div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div><!-- fin tienda -->
+
+<!-- ═══════════════════════ COLECCIONES ═══════════════════════ -->
+<div id="page-colecciones" class="page">
+  <div class="colecciones-hero">
+    <p class="section-label">Selección exclusiva</p>
+    <h1>Colecciones <em style="font-style:italic;color:var(--bordo-claro)">especiales</em></h1>
+    <p style="font-size:12px;color:var(--texto-muted);max-width:500px;line-height:1.9;margin-top:14px">Experiencias únicas, packs premium y ediciones limitadas seleccionadas por nuestro equipo de sommeliers para los paladares más exigentes.</p>
+  </div>
+  <div class="colecciones-grid">
+    <div class="coleccion-card">
+      <span class="col-icon">🍾</span>
+      <p class="col-tag">Pack exclusivo</p>
+      <h3 class="col-name">Caja Premium Malbec</h3>
+      <p class="col-desc">Selección de 6 Malbecs icónicos de las mejores bodegas de Mendoza. Ideal para regalo corporativo o coleccionistas. Incluye maridaje impreso y sommelier card.</p>
+      <p class="col-price">$98.000 · 6 botellas</p>
+      <button class="btn-primary" style="margin-top:20px">Adquirir pack</button>
+    </div>
+    <div class="coleccion-card">
+      <span class="col-icon">🥂</span>
+      <p class="col-tag">Experiencia privada</p>
+      <h3 class="col-name">Degustación Boutique</h3>
+      <p class="col-desc">Cata íntima para hasta 8 personas con sommelier certificado. Incluye 6 vinos premium, tabla de quesos y embutidos, y guía de maridaje personalizada.</p>
+      <p class="col-price">$85.000 · Hasta 8 personas</p>
+      <button class="btn-primary" style="margin-top:20px">Reservar cata</button>
+    </div>
+    <div class="coleccion-card">
+      <span class="col-icon">⭐</span>
+      <p class="col-tag">Edición limitada</p>
+      <h3 class="col-name">Gran Reserva 2019</h3>
+      <p class="col-desc">Colección de añadas excepcionales disponibles en cantidad muy limitada. Cosechas 2019 de Catena Zapata, Zuccardi Valle Andino y Achaval Ferrer.</p>
+      <p class="col-price">$145.000 · 3 botellas</p>
+      <button class="btn-primary" style="margin-top:20px">Ver disponibilidad</button>
+    </div>
+    <div class="coleccion-card">
+      <span class="col-icon">🎁</span>
+      <p class="col-tag">Regalo premium</p>
+      <h3 class="col-name">Gift Box Espumantes</h3>
+      <p class="col-desc">Estuche de lujo con 3 espumantes premium seleccionados: un Brut Nature, un Blanc de Blancs y un rosado extra brut. Presentación ideal para regalos especiales.</p>
+      <p class="col-price">$72.000 · 3 botellas</p>
+      <button class="btn-primary" style="margin-top:20px">Adquirir gift box</button>
+    </div>
+  </div>
+  <div class="section-dark" style="padding:60px 48px;text-align:center">
+    <p class="section-label" style="justify-content:center;margin-bottom:10px">¿Buscás algo especial?</p>
+    <h2 style="font-family:var(--serif);font-size:34px;font-weight:300;margin-bottom:14px">Armamos tu colección a medida</h2>
+    <p style="font-size:11px;color:var(--texto-muted);margin-bottom:28px">Contactanos y nuestro equipo diseña una selección personalizada según tu presupuesto, preferencias y ocasión.</p>
+    <button class="btn-primary" onclick="showPage('contacto')">Consultar ahora</button>
+  </div>
+</div><!-- fin colecciones -->
+
+<!-- ═══════════════════════ BLOG ═══════════════════════ -->
+<div id="page-blog" class="page">
+  <section class="section" style="padding-bottom:40px">
+    <p class="section-label">Cultura del vino</p>
+    <h1 style="font-family:var(--serif);font-size:52px;font-weight:300;margin-bottom:8px">Blog & Editorial</h1>
+    <p style="font-size:11px;color:var(--texto-muted)">Maridajes, recomendaciones de temporada y el mundo del vino premium</p>
+  </section>
+  <div style="padding:0 48px 80px">
+    <div class="blog-grid">
+      <div class="blog-card">
+        <div class="blog-img">🍷</div>
+        <div class="blog-body">
+          <p class="blog-cat">Maridaje</p>
+          <h3 class="blog-title">Los mejores maridajes para un Malbec de alta gama</h3>
+          <p class="blog-excerpt">Descubrí cómo potenciar un Malbec premium con los alimentos correctos. Desde cortes de carne hasta quesos maduros, la guía definitiva.</p>
+          <p class="blog-meta">15 mayo 2025 · 5 min lectura</p>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-img">🏔️</div>
+        <div class="blog-body">
+          <p class="blog-cat">Terroir</p>
+          <h3 class="blog-title">Valle de Uco: el secreto mejor guardado de Mendoza</h3>
+          <p class="blog-excerpt">A 1.200 metros de altura, este valle produce algunos de los vinos más premiados de Argentina. Todo sobre su clima, suelo y las bodegas que lo habitan.</p>
+          <p class="blog-meta">8 mayo 2025 · 7 min lectura</p>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-img">📚</div>
+        <div class="blog-body">
+          <p class="blog-cat">Coleccionismo</p>
+          <h3 class="blog-title">Cómo empezar tu cava personal en casa</h3>
+          <p class="blog-excerpt">Temperatura, humedad, luz y posición. Todo lo que necesitás saber para conservar tus botellas en condiciones óptimas durante años.</p>
+          <p class="blog-meta">1 mayo 2025 · 6 min lectura</p>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-img">🥂</div>
+        <div class="blog-body">
+          <p class="blog-cat">Espumantes</p>
+          <h3 class="blog-title">Guía de espumantes argentinos: de la uva a la copa</h3>
+          <p class="blog-excerpt">El método champenoise aplicado en la Argentina produce resultados extraordinarios. Conocé los mejores productores y sus técnicas únicas.</p>
+          <p class="blog-meta">24 abril 2025 · 5 min lectura</p>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-img">🌿</div>
+        <div class="blog-body">
+          <p class="blog-cat">Sostenibilidad</p>
+          <h3 class="blog-title">Vinos orgánicos y biodinámicos: la nueva ola premium</h3>
+          <p class="blog-excerpt">Bodegas argentinas líderes en prácticas sustentables están redefiniendo el concepto de lujo. Calidad, conciencia y sabor en una misma botella.</p>
+          <p class="blog-meta">18 abril 2025 · 4 min lectura</p>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-img">🎓</div>
+        <div class="blog-body">
+          <p class="blog-cat">Educación</p>
+          <h3 class="blog-title">Cómo catar un vino como un sommelier profesional</h3>
+          <p class="blog-excerpt">Vista, nariz y boca. El método de cata profesional explicado paso a paso para que puedas sacar el máximo provecho de cada botella.</p>
+          <p class="blog-meta">10 abril 2025 · 8 min lectura</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- fin blog -->
+
+<!-- ═══════════════════════ NOSOTROS ═══════════════════════ -->
+<div id="page-nosotros" class="page">
+  <div class="nosotros-hero">
+    <div class="nosotros-left">
+      <p class="section-label">Nuestra historia</p>
+      <h1>Pasión por el<br>vino <em>argentino</em></h1>
+      <p style="margin-top:20px">Carta de Vinos nació de la convicción de que cada botella cuenta una historia. Desde 2018, seleccionamos personalmente los mejores vinos de las bodegas más reconocidas y de pequeños productores boutique de todo el país.</p>
+      <p>Nuestro equipo de sommeliers certificados recorre viñedos, conoce a los productores y elige solo aquellos vinos que cumplan con nuestra filosofía: calidad, identidad y experiencia.</p>
+      <p>Hoy somos la vinoteca online de referencia para coleccionistas, regalos corporativos y amantes del vino que no quieren comprometer la calidad.</p>
+    </div>
+    <div class="nosotros-right">
+      <div class="values-list">
+        <div class="value-item">
+          <span class="value-num">01</span>
+          <div class="value-text">
+            <h4>Selección curada</h4>
+            <p>Cada botella pasa por una cata interna antes de entrar al catálogo. Si no nos convence, no lo vendemos.</p>
+          </div>
+        </div>
+        <div class="value-item">
+          <span class="value-num">02</span>
+          <div class="value-text">
+            <h4>Relación directa con bodegas</h4>
+            <p>Trabajamos directamente con productores para garantizar trazabilidad, precio justo y acceso a ediciones especiales.</p>
+          </div>
+        </div>
+        <div class="value-item">
+          <span class="value-num">03</span>
+          <div class="value-text">
+            <h4>Experiencia boutique</h4>
+            <p>No somos un supermercado de vinos. Somos curadores. Cada interacción está diseñada para ser memorable.</p>
+          </div>
+        </div>
+        <div class="value-item">
+          <span class="value-num">04</span>
+          <div class="value-text">
+            <h4>Compromiso con la excelencia</h4>
+            <p>El packaging, la atención, el asesoramiento y la entrega: todo refleja el nivel de la botella que adquirís.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><p class="stat-num">+200</p><p class="stat-label">Vinos en catálogo</p></div>
+    <div class="stat"><p class="stat-num">6</p><p class="stat-label">Sommeliers certificados</p></div>
+    <div class="stat"><p class="stat-num">+3.500</p><p class="stat-label">Clientes satisfechos</p></div>
+    <div class="stat"><p class="stat-num">7</p><p class="stat-label">Años de experiencia</p></div>
+  </div>
+  <section class="section" style="text-align:center">
+    <p class="section-label" style="justify-content:center;margin-bottom:10px">Nuestro equipo</p>
+    <h2 style="font-family:var(--serif);font-size:34px;font-weight:300;margin-bottom:40px">Los que eligen por vos</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--borde);max-width:700px;margin:0 auto">
+      <div style="background:var(--negro);padding:32px 20px">
+        <div style="width:60px;height:60px;border-radius:50%;background:#1a0408;border:0.5px solid var(--bordo);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px">🍷</div>
+        <p style="font-family:var(--serif);font-size:16px;color:var(--blanco);margin-bottom:4px">Valentina Cruz</p>
+        <p style="font-size:8px;letter-spacing:2px;color:var(--bordo-claro);text-transform:uppercase">Head Sommelier</p>
+      </div>
+      <div style="background:var(--negro);padding:32px 20px">
+        <div style="width:60px;height:60px;border-radius:50%;background:#0a1a08;border:0.5px solid #2a502a;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px">🍇</div>
+        <p style="font-family:var(--serif);font-size:16px;color:var(--blanco);margin-bottom:4px">Rodrigo Ferreiro</p>
+        <p style="font-size:8px;letter-spacing:2px;color:var(--bordo-claro);text-transform:uppercase">Director de Bodega</p>
+      </div>
+      <div style="background:var(--negro);padding:32px 20px">
+        <div style="width:60px;height:60px;border-radius:50%;background:#0a0a1a;border:0.5px solid #2a2a50;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px">📋</div>
+        <p style="font-family:var(--serif);font-size:16px;color:var(--blanco);margin-bottom:4px">Sofía Martínez</p>
+        <p style="font-size:8px;letter-spacing:2px;color:var(--bordo-claro);text-transform:uppercase">Curadora Premium</p>
+      </div>
+    </div>
+  </section>
+</div><!-- fin nosotros -->
+
+<!-- ═══════════════════════ CONTACTO ═══════════════════════ -->
+<div id="page-contacto" class="page">
+  <div class="contacto-split">
+    <div class="contacto-left">
+      <p class="section-label">Estamos para ayudarte</p>
+      <h1>Contacto</h1>
+      <p style="margin-top:14px">Consultá sobre nuestros vinos, pedí asesoramiento personalizado o reservá una experiencia de degustación.</p>
+      <div style="margin-top:32px">
+        <div class="form-group">
+          <label>Nombre completo</label>
+          <input type="text" placeholder="Tu nombre">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="tu@email.com">
+        </div>
+        <div class="form-group">
+          <label>Motivo de consulta</label>
+          <select>
+            <option>Consulta sobre productos</option>
+            <option>Pedido personalizado</option>
+            <option>Reserva de degustación</option>
+            <option>Regalo corporativo</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mensaje</label>
+          <textarea placeholder="Contanos en qué podemos ayudarte..."></textarea>
+        </div>
+        <button class="btn-primary" style="width:100%">Enviar consulta</button>
+      </div>
+    </div>
+    <div class="contacto-right">
+      <div>
+        <h3 class="contact-info" style="font-family:var(--serif);font-size:24px;font-weight:300;margin-bottom:28px">Encontranos</h3>
+        <div class="contact-item">
+          <span class="contact-icon">📍</span>
+          <div>
+            <p class="contact-label">Dirección</p>
+            <p class="contact-val">Av. Alvear 1234, Recoleta<br>Buenos Aires, Argentina</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">📞</span>
+          <div>
+            <p class="contact-label">Teléfono</p>
+            <p class="contact-val">+54 11 4322-0000</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">✉️</span>
+          <div>
+            <p class="contact-label">Email</p>
+            <p class="contact-val">hola@cartadevinos.com.ar</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">🕐</span>
+          <div>
+            <p class="contact-label">Horario de atención</p>
+            <p class="contact-val">Lun–Vie: 10:00–19:00<br>Sáb: 10:00–14:00</p>
+          </div>
+        </div>
+        <div class="contact-item" style="border-bottom:none">
+          <span class="contact-icon">📸</span>
+          <div>
+            <p class="contact-label">Instagram</p>
+            <p class="contact-val">@cartadevinos.ar</p>
+          </div>
+        </div>
+      </div>
+      <button class="wa-contact">
+        <span style="font-size:18px">💬</span>
+        Escribinos por WhatsApp
+      </button>
+    </div>
+  </div>
+</div><!-- fin contacto -->
+
+<!-- FOOTER (todas las páginas) -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <p class="logo" style="font-family:var(--serif);font-size:18px;letter-spacing:4px;font-weight:300;margin-bottom:14px">CARTA · DE VINOS</p>
+      <p>Vinoteca premium online con selección curada de los mejores vinos argentinos. Para quienes aprecian la diferencia.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Tienda</h4>
+      <ul>
+        <li><a onclick="showPage('tienda')">Tintos</a></li>
+        <li><a onclick="showPage('tienda')">Blancos</a></li>
+        <li><a onclick="showPage('tienda')">Espumantes</a></li>
+        <li><a onclick="showPage('tienda')">Premium</a></li>
+        <li><a onclick="showPage('tienda')">Reserva</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Información</h4>
+      <ul>
+        <li><a onclick="showPage('nosotros')">Nosotros</a></li>
+        <li><a onclick="showPage('blog')">Blog</a></li>
+        <li><a onclick="showPage('colecciones')">Colecciones</a></li>
+        <li><a onclick="showPage('contacto')">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a>hola@cartadevinos.com.ar</a></li>
+        <li><a>+54 11 4322-0000</a></li>
+        <li><a>@cartadevinos.ar</a></li>
+        <li><a>Recoleta, Buenos Aires</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Carta de Vinos · Todos los derechos reservados</p>
+    <div class="social-links">
+      <a class="social-link">Instagram</a>
+      <a class="social-link">WhatsApp</a>
+      <a class="social-link" style="color:#25D366">💬 WhatsApp</a>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp flotante -->
+<button class="wa-float">💬 Consultanos</button>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const navEl = document.getElementById('nav-' + id);
+  if(navEl) navEl.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
